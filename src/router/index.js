@@ -124,6 +124,27 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/scoregoods',
+    component: Layout,
+    redirect: '/scoregoods/index',
+    name: 'Activity',
+    meta: { title: '积分商品', icon: 'excel' },
+    children: [
+      {
+        path: 'index',
+        name: 'ActivityList',
+        component: () => import('@/views/scoregoods/index'),
+        meta: { title: '全部商品', icon: 'search' }
+      },
+      {
+        path: 'add',
+        name: 'ActivityAdd',
+        component: () => import('@/views/scoregoods/add'),
+        meta: { title: '发布商品', icon: 'edit' }
+      }
+    ]
+  },
 
   // {
   //   path: 'external-link',
