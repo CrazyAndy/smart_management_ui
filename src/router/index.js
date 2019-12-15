@@ -96,9 +96,31 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        name: 'Form',
+        name: 'Peoples',
         component: () => import('@/views/peoples/index'),
         meta: { title: '居民管理', icon: 'peoples' }
+      }
+    ]
+  },
+
+  {
+    path: '/activity',
+    component: Layout,
+    redirect: '/activity/list',
+    name: 'Activity',
+    meta: { title: '活动管理', icon: 'excel' },
+    children: [
+      {
+        path: 'list',
+        name: 'ActivityList',
+        component: () => import('@/views/activity/index'),
+        meta: { title: '查询活动', icon: 'search' }
+      },
+      {
+        path: 'add',
+        name: 'ActivityAdd',
+        component: () => import('@/views/activity/add'),
+        meta: { title: '发布活动', icon: 'edit' }
       }
     ]
   },
