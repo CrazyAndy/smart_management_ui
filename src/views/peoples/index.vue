@@ -45,7 +45,7 @@
         <el-table-column prop="auditTime" label="审核时间" width="95" align="center" />
         <el-table-column prop="auditStatus" label="审核状态" width="80" align="center" />
         <el-table-column align="center">
-          <template slot="header" slot-scope="scope">操作</template>
+          <template slot="header">操作</template>
           <template slot-scope="scope">
             <el-button type="success" size="mini" @click="toAudit(scope.$index, scope.row)">审核</el-button>
           </template>
