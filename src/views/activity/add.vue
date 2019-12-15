@@ -54,7 +54,6 @@
 
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即发布</el-button>
-          <el-button>取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -83,7 +82,6 @@ export default {
 </script>
 
 <style scoped>
-.activity-add {
-}
+
 </style>
 

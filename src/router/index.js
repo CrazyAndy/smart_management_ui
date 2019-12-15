@@ -114,7 +114,7 @@ export const constantRoutes = [
         path: 'list',
         name: 'ActivityList',
         component: () => import('@/views/activity/index'),
-        meta: { title: '查询活动', icon: 'search' }
+        meta: { title: '全部活动', icon: 'search' }
       },
       {
         path: 'add',
