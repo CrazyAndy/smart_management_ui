@@ -124,6 +124,7 @@ export const constantRoutes = [
       }
     ]
   },
+
   {
     path: '/scoregoods',
     component: Layout,
@@ -142,6 +143,27 @@ export const constantRoutes = [
         name: 'ActivityAdd',
         component: () => import('@/views/scoregoods/add'),
         meta: { title: '发布商品', icon: 'edit' }
+      }
+    ]
+  },
+  {
+    path: '/article',
+    component: Layout,
+    redirect: '/article/list',
+    name: 'Activity',
+    meta: { title: '资讯管理', icon: 'excel' },
+    children: [
+      {
+        path: 'index',
+        name: 'AriticleList',
+        component: () => import('@/views/article/list'),
+        meta: { title: '全部资讯', icon: 'search' }
+      },
+      {
+        path: 'create',
+        name: 'ArticleCreate',
+        component: () => import('@/views/article/create'),
+        meta: { title: '发布资讯', icon: 'edit' }
       }
     ]
   },
