@@ -154,7 +154,7 @@ export default {
             onClose: () => {
               console.log('ok')
             }
-          });
+          })
           this.$router.push({
             name: 'ActivityList'
           })
