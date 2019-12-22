@@ -12,9 +12,9 @@
 
         <el-table-column align="center">
           <template slot="header">操作</template>
-          <template>
-            <el-button type="success" size="mini">详情</el-button>
-            <el-button type="warning" size="mini">删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="success" size="mini" @click="onDetail(scope.row.id)">详情</el-button>
+            <el-button type="warning" size="mini" @click="onDel(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -25,7 +25,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import { getScoreList } from '@/api/score'
+import { getScoreList, delScoreGood } from '@/api/score'
 export default {
   components: { Pagination },
   data() {
@@ -54,6 +54,25 @@ export default {
         name: 'ScoreGoodAdd'
       })
     },
+    onDel(id) {
+      delScoreGood(id)
+        .then(res => {
+          this.$message.success('删除成功')
+          this.getList()
+        })
+        .catch(err => {
+          this.$message.success('删除失败')
+          console.log(err)
+        })
+    },
+    onDetail(id) {
+      this.$router.push({
+        name: 'ScoreGoodDetail',
+        params: {
+          id
+        }
+      })
+    },
     getList(setInit) {
       this.listLoading = true
       if (setInit === 1) { this.listQuery.page = 1 }
@@ -63,7 +82,6 @@ export default {
       }
       getScoreList(req)
         .then(res => {
-          console.log(res)
           this.tableData = res.content
           this.total = res.totalElements
           this.listLoading = false

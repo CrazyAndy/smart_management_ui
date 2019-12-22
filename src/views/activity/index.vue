@@ -16,8 +16,8 @@
         <el-table-column align="center">
           <template slot="header">操作</template>
           <template>
-            <el-button type="success" size="mini">详情</el-button>
-            <el-button type="warning" size="mini">删除</el-button>
+            <el-button type="success" size="mini" @click="onDetail">详情</el-button>
+            <el-button type="warning" size="mini" @click="onDel">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -22,3 +22,19 @@ export function createScoreGood(data) {
   })
 }
 
+// 删除积分商品
+export function delScoreGood(id) {
+  return request({
+    url: '//dongwuzhijia.com/bms/v1/score/scoreGoods/' + id,
+    method: 'DELETE'
+  })
+}
+
+// 积分商品详情
+export function getScoreGood(id) {
+  return request({
+    url: '//dongwuzhijia.com/bms/v1/score/scoreGoods/' + id,
+    method: 'GET'
+  })
+}
+

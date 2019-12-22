@@ -108,6 +108,13 @@ export const constantRoutes = [
         name: 'ScoreGoodAdd',
         component: () => import('@/views/scoregoods/add'),
         meta: { title: '发布商品', icon: 'edit' }
+      },
+      {
+        path: 'detail',
+        name: 'ScoreGoodDetail',
+        component: () => import('@/views/scoregoods/add'),
+        meta: { title: '商品详情', icon: 'edit' },
+        hidden: true
       }
     ]
   },

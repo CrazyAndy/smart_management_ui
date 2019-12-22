@@ -5,19 +5,19 @@
         <el-row>
           <el-col :span="10">
             <el-form-item label="商品名称">
-              <el-input v-model="form.name" maxlength="50" />
+              <el-input v-model="form.name" maxlength="50" :disabled="goodId" />
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="兑换总量">
-              <el-input v-model="form.allowExchangeAmount" maxlength="5" />
+              <el-input v-model="form.allowExchangeAmount" maxlength="5" :disabled="goodId" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="10">
             <el-form-item label="兑换所需积分">
-              <el-input v-model="form.needScore" maxlength="10" />
+              <el-input v-model="form.needScore" maxlength="10" :disabled="goodId" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -43,13 +43,13 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="兑换说明">
-              <el-input v-model="form.address" type="textarea" />
+              <el-input v-model="form.address" type="textarea" :disabled="goodId" />
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即发布</el-button>
+          <el-button v-if="!goodId" type="primary" @click="onSubmit">立即发布</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { createScoreGood } from '@/api/score'
+import { createScoreGood, getScoreGood } from '@/api/score'
 export default {
   data() {
     return {
@@ -68,8 +68,16 @@ export default {
         needScore: '',
         startTime: new Date().getTime(),
         stock: '',
-        thumbnailPath: ''
-      }
+        thumbnailPath: '',
+        allowExchangeAmount: ''
+      },
+      goodId: ''
+    }
+  },
+  mounted() {
+    this.goodId = this.$route.params.id
+    if (this.goodId) {
+      this.getScoreGoodDetail(this.goodId)
     }
   },
   methods: {
@@ -83,6 +91,18 @@ export default {
         this.$message.error('上传头像图片大小不能超过 5MB!')
       }
       return isLt2M
+    },
+    // 获取商品详情
+    getScoreGoodDetail(id) {
+      getScoreGood(id)
+        .then(res => {
+          console.log(res)
+          this.form = res
+          this.form.address = res.applyForGoodsRuleDetail.address
+          this.form.allowExchangeAmount = res.applyForGoodsRuleDetail.allowExchangeAmount
+        }).catch(err => {
+          console.log(err)
+        })
     },
     onSubmit() {
       const req = this.form
