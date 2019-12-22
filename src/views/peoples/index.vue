@@ -52,7 +52,7 @@
         </el-table-column>
         <el-table-column prop="createdAt" label="申请时间" width="95" align="center" />
 
-        <el-table-column prop="auditTime" label="审核时间" width="95" align="center" />
+        <el-table-column prop="updatedAt" label="审核时间" width="95" align="center" />
         <el-table-column label="审核状态" width="80" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.applyForTypeEnum | userFilter }}</span>
@@ -61,7 +61,7 @@
         <el-table-column align="center">
           <template slot="header">操作</template>
           <template slot-scope="scope">
-            <el-button type="success" size="mini" @click="toAudit(scope.$index, scope.row)">审核</el-button>
+            <el-button type="success" size="mini" :disabled="scope.row.applyForTypeEnum === 'APPROVED'" @click="toAudit(scope.$index, scope.row)">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -83,7 +83,8 @@ export default {
         FEMALE: '女',
         TENANT: '租户',
         HOUSEHOLD: '住户',
-        APPLYING: '审核中'
+        APPLYING: '审核中',
+        APPROVED: '审核通过'
       }
       return statusMap[status]
     }
@@ -118,11 +119,27 @@ export default {
         type: 'warning'
       })
     },
-    toAudit() {
-      this.$alert('审核通过确认', '标题名称', {
+    toAudit(index, row) {
+      this.$alert('确认审核通过？', '审核确认', {
         confirmButtonText: '审核通过',
         callback: action => {
-
+          auditUser(row)
+            .then(res => {
+              if (!res) {
+                this.$message({
+                  message: '审核完成',
+                  type: 'success'
+                })
+                this.getAllUserData()
+              }
+            })
+            .catch(err => {
+              this.$message({
+                message: '审核失败，请稍后重试',
+                type: 'warning'
+              })
+              console.log(err)
+            })
         }
       })
       // this.$message('审核!')
@@ -132,7 +149,7 @@ export default {
       this.listLoading = true
       if (setInit === 1) { this.listQuery.page = 1 }
       const req = {
-        pageNum: this.listQuery.page,
+        pageNum: this.listQuery.page - 1,
         size: this.listQuery.limit
       }
       getAllUser(req)

@@ -42,7 +42,7 @@ export function auditUser(data) {
     url: '//dongwuzhijia.com/bms/v1/resident/' + data.id,
     method: 'PUT',
     params: {
-      isPass: data.isPass
+      isPass: 'true'
     }
   })
 }
