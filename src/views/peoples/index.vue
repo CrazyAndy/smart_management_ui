@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { getAllUser } from '@/api/user'
 export default {
   data() {
     return {
@@ -107,6 +108,9 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.getAllUserData()
+  },
   methods: {
     onSubmit() {
       this.$message('submit!')
@@ -119,6 +123,16 @@ export default {
     },
     toAudit() {
       this.$message('审核!')
+    },
+    // 获取所有居民
+    getAllUserData() {
+      getAllUser()
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }
