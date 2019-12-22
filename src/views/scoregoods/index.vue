@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <el-button type="primary" @click="goAddGood">发布商品</el-button>
     <!-- 积分商品查询结果 -->
     <div class="data">
       <el-table :data="tableData" border style="width: 100%;" align="center">
@@ -48,6 +49,11 @@ export default {
     this.getList()
   },
   methods: {
+    goAddGood() {
+      this.$router.push({
+        name: 'ScoreGoodAdd'
+      })
+    },
     getList(setInit) {
       this.listLoading = true
       if (setInit === 1) { this.listQuery.page = 1 }

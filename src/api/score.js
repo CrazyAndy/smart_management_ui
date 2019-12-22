@@ -12,3 +12,13 @@ export function getScoreList(data) {
     }
   })
 }
+
+// 创建积分商品
+export function createScoreGood(data) {
+  return request({
+    url: '//dongwuzhijia.com/bms/v1/score/scoreGoods',
+    method: 'POST',
+    data
+  })
+}
+

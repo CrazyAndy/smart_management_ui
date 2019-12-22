@@ -80,7 +80,6 @@
 
 <script>
 import { createActivity } from '@/api/activity'
-import { Loading } from 'element-ui'
 
 export default {
   data() {

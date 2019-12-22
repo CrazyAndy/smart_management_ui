@@ -94,18 +94,18 @@ export const constantRoutes = [
     path: '/scoregoods',
     component: Layout,
     redirect: '/scoregoods/index',
-    name: 'Activity',
+    name: 'ScoreGood',
     meta: { title: '积分商品', icon: 'excel' },
     children: [
       {
         path: 'index',
-        name: 'ActivityList',
+        name: 'ScoreGoodList',
         component: () => import('@/views/scoregoods/index'),
         meta: { title: '全部商品', icon: 'search' }
       },
       {
         path: 'add',
-        name: 'ActivityAdd',
+        name: 'ScoreGoodAdd',
         component: () => import('@/views/scoregoods/add'),
         meta: { title: '发布商品', icon: 'edit' }
       }
