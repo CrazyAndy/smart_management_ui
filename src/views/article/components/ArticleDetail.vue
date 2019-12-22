@@ -1,16 +1,16 @@
 <template>
   <div class="createPost-container">
-    <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
+    <el-form ref="postForm" :model="postForm" class="form-container">
       <div class="createPost-main-container">
         <el-row>
           <el-col :span="10">
             <el-form-item style="margin-bottom: 40px;" label-width="80px" label="资讯标题:">
-              <el-input v-model="postForm.content_short" :rows="1" type="text" />
+              <el-input v-model="postForm.title" :rows="1" type="text" />
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item style="margin-bottom: 40px;" label-width="100px" label="资讯类型:">
-              <el-select v-model="postForm.type" placeholder="请选择">
+              <el-select v-model="postForm.informationTypeEnum" placeholder="请选择">
                 <el-option
                   v-for="item in typeOptions"
                   :key="item.value"
@@ -24,22 +24,44 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label-width="80px" label="是否置顶:">
-              <el-radio v-model="isSitck" label="0">否</el-radio>
-              <el-radio v-model="isSitck" label="1">是</el-radio>
+              <el-radio v-model="postForm.isCarousel" :label="false">否</el-radio>
+              <el-radio v-model="postForm.isCarousel" :label="true">是</el-radio>
             </el-form-item>
           </el-col>
           <el-col :span="8" />
         </el-row>
 
-        <el-form-item prop="image_uri" style="margin-bottom: 30px;">
-          <Upload v-model="postForm.image_uri" />
-        </el-form-item>
+        <!-- <el-form-item prop="image_uri" style="margin-bottom: 30px;">
+          <Upload v-model="postForm.carouselImagePath" />
+        </el-form-item> -->
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="资讯图片">
+              <el-upload
+                class="avatar-uploader"
+                name="imageFile"
+                action="//dongwuzhijia.com/bms/v1/infra/image/uploadImage"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <img v-if="postForm.carouselImagePath" :src="postForm.carouselImagePath" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon" />
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-form-item prop="content" style="margin-bottom: 30px;">
-          <Tinymce ref="editor" v-model="postForm.content" :height="400" />
+          <Tinymce ref="editor" v-model="postForm.content" :height="400" :width="800" />
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">立即发布</el-button>
         </el-form-item>
 
       </div>
+
     </el-form>
   </div>
 </template>
@@ -47,29 +69,12 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/SingleImage3'
-// import MDinput from '@/components/MDinput'
-// import { fetchArticle } from '@/api/article'
-// import { searchUser } from '@/api/remote-search'
-import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
-
-const defaultForm = {
-  status: 'draft',
-  title: '', // 文章题目
-  content: '', // 文章内容
-  content_short: '', // 文章摘要
-  source_uri: '', // 文章外链
-  image_uri: '', // 文章图片
-  display_time: undefined, // 前台展示时间
-  id: undefined,
-  platforms: ['a-platform'],
-  comment_disabled: false,
-  importance: 0
-}
+import { createArticle } from '@/api/article'
 
 export default {
   name: 'ArticleDetail',
   // eslint-disable-next-line vue/no-unused-components
-  components: { Tinymce, Upload, CommentDropdown, PlatformDropdown, SourceUrlDropdown },
+  components: { Tinymce, Upload },
   props: {
     isEdit: {
       type: Boolean,
@@ -77,148 +82,91 @@ export default {
     }
   },
   data() {
-    const validateRequire = (rule, value, callback) => {
-      if (value === '') {
-        this.$message({
-          message: rule.field + '为必传项',
-          type: 'error'
-        })
-        callback(new Error(rule.field + '为必传项'))
-      } else {
-        callback()
-      }
-    }
-    const validateSourceUri = (rule, value, callback) => {
-      if (value) {
-        // eslint-disable-next-line no-undef
-        if (validURL(value)) {
-          callback()
-        } else {
-          this.$message({
-            message: '外链url填写不正确',
-            type: 'error'
-          })
-          callback(new Error('外链url填写不正确'))
-        }
-      } else {
-        callback()
-      }
-    }
     return {
-      postForm: Object.assign({}, defaultForm),
-      loading: false,
-      userListOptions: [],
-      rules: {
-        image_uri: [{ validator: validateRequire }],
-        title: [{ validator: validateRequire }],
-        content: [{ validator: validateRequire }],
-        source_uri: [{ validator: validateSourceUri, trigger: 'blur' }]
+      postForm: {
+        id: '',
+        title: '', // 文章题目
+        content: '', // 文章内容
+        carouselImagePath: '', // 文章图片
+        isCarousel: false,
+        informationTypeEnum: ''
       },
-      tempRoute: {},
-      type: '',
       typeOptions: [{
-        value: '1',
-        label: '新闻'
-      }],
-      isSitck: 0
+        value: 'POLICY',
+        label: '政策'
+      }, {
+        value: 'COMMUNITY_ANNOUNCEMENTS',
+        label: '社区公告'
+      }, {
+        value: 'GOODPEOPLE_GOODDEEDS',
+        label: '好人好事'
+      }]
     }
   },
-  computed: {
-    contentShortLength() {
-      return this.postForm.content_short.length
-    },
-    displayTime: {
-      // set and get is useful when the data
-      // returned by the back end api is different from the front end
-      // back end return => "2013-06-25 06:59:25"
-      // front end need timestamp => 1372114765000
-      get() {
-        return (+new Date(this.postForm.display_time))
-      },
-      set(val) {
-        this.postForm.display_time = new Date(val)
-      }
-    }
-  },
+  computed: {},
   created() {
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id
       this.fetchData(id)
     }
-
-    // Why need to make a copy of this.$route here?
-    // Because if you enter this page and quickly switch tag, may be in the execution of the setTagsViewTitle function, this.$route is no longer pointing to the current page
-    // https://github.com/PanJiaChen/vue-element-admin/issues/1221
-    this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
-    fetchData(id) {
-      // eslint-disable-next-line no-undef
-      fetchArticle(id).then(response => {
-        this.postForm = response.data
-
-        // just for test
-        this.postForm.title += `   Article Id:${this.postForm.id}`
-        this.postForm.content_short += `   Article Id:${this.postForm.id}`
-
-        // set tagsview title
-        this.setTagsViewTitle()
-
-        // set page title
-        this.setPageTitle()
-      }).catch(err => {
-        console.log(err)
-      })
+    handleAvatarSuccess(res, file) {
+      this.postForm.carouselImagePath = res
+      console.log('上传图片地址：', this.postForm.carouselImagePath)
     },
-    setTagsViewTitle() {
-      const title = 'Edit Article'
-      const route = Object.assign({}, this.tempRoute, { title: `${title}-${this.postForm.id}` })
-      this.$store.dispatch('tagsView/updateVisitedView', route)
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 5
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!')
+      }
+      return isLt2M
     },
-    setPageTitle() {
-      const title = 'Edit Article'
-      document.title = `${title} - ${this.postForm.id}`
-    },
-    submitForm() {
-      console.log(this.postForm)
-      this.$refs.postForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$notify({
-            title: '成功',
-            message: '发布文章成功',
-            type: 'success',
-            duration: 2000
-          })
-          this.postForm.status = 'published'
-          this.loading = false
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    draftForm() {
-      if (this.postForm.content.length === 0 || this.postForm.title.length === 0) {
-        this.$message({
-          message: '请填写必要的标题和内容',
-          type: 'warning'
-        })
+    onSubmit() {
+      const req = this.postForm
+      if (!req.title) {
+        this.$message('请输入资讯标题')
         return
       }
-      this.$message({
-        message: '保存成功',
-        type: 'success',
-        showClose: true,
-        duration: 1000
-      })
-      this.postForm.status = 'draft'
+      if (!req.informationTypeEnum) {
+        this.$message('请选择资讯类型')
+        return
+      }
+      if (!req.carouselImagePath) {
+        this.$message('请上传资讯图片')
+        return
+      }
+      if (!req.content) {
+        this.$message('请输入文章内容')
+        return
+      }
+      createArticle(req)
+        .then(res => {
+          this.$message({
+            message: '发布成功',
+            type: 'success',
+            onClose: () => {
+              console.log('ok')
+            }
+          })
+          this.$router.push({
+            name: 'AriticleList'
+          })
+        })
+        .catch(err => {
+          this.$message({
+            message: '发布失败',
+            type: 'warning'
+          })
+          console.log(err)
+        })
     }
+
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "~@/styles/mixin.scss";
 
 .createPost-container {
@@ -255,4 +203,27 @@ export default {
     border-bottom: 1px solid #bfcbd9;
   }
 }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

@@ -7,7 +7,8 @@
       :on-success="handleImageSuccess"
       class="image-uploader"
       drag
-      action="https://httpbin.org/post"
+      name="imageFile"
+      action="//dongwuzhijia.com/bms/v1/infra/image/uploadImage"
     >
       <i class="el-icon-upload" />
       <div class="el-upload__text">
