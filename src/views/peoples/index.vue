@@ -21,7 +21,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="getAllUserData(1)">查询</el-button>
         </el-form-item>
       </el-form>
 
@@ -33,18 +33,31 @@
         <el-table-column prop="nickName" label="昵称" align="center" />
         <el-table-column prop="version" label="总积分" align="center" />
         <el-table-column prop="realName" label="姓名" align="center" />
-        <el-table-column prop="gender" label="性别" width="50" align="center" />
+        <el-table-column label="性别" width="50" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.gender | userFilter }}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column prop="birthday" label="生日" width="95" align="center" />
 
         <el-table-column prop="mobile" label="手机号" width="110" align="center" />
 
         <el-table-column prop="village.villageName" label="小区" align="center" />
         <!-- <el-table-column prop="detail" label="详细地址" align="center" /> -->
-        <el-table-column prop="residentTypeEnum" label="住户类型" align="center" />
+        <el-table-column label="住户类型" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.residentTypeEnum | userFilter }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="createdAt" label="申请时间" width="95" align="center" />
 
         <el-table-column prop="auditTime" label="审核时间" width="95" align="center" />
-        <el-table-column prop="applyForTypeEnum" label="审核状态" width="80" align="center" />
+        <el-table-column label="审核状态" width="80" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.applyForTypeEnum | userFilter }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center">
           <template slot="header">操作</template>
           <template slot-scope="scope">
@@ -53,7 +66,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <pagination v-show="total>0" :page-sizes="listQuery.limit" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getAllUserData" />
+    <pagination v-show="total>0" :page-sizes="[listQuery.limit]" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getAllUserData" />
   </div>
 </template>
 
@@ -61,7 +74,20 @@
 import Pagination from '@/components/Pagination'
 import { getAllUser } from '@/api/user'
 export default {
+  name: 'Peoples',
   components: { Pagination },
+  filters: {
+    userFilter(status) {
+      const statusMap = {
+        MALE: '男',
+        FEMALE: '女',
+        TENANT: '租户',
+        HOUSEHOLD: '住户',
+        APPLYING: '审核中'
+      }
+      return statusMap[status]
+    }
+  },
   data() {
     return {
       list: null,
@@ -96,8 +122,9 @@ export default {
       this.$message('审核!')
     },
     // 获取所有居民
-    getAllUserData() {
+    getAllUserData(setInit) {
       this.listLoading = true
+      if (setInit === 1) { this.listQuery.page = 1 }
       const req = {
         pageNum: this.listQuery.page,
         size: this.listQuery.limit
