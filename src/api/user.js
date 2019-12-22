@@ -23,9 +23,14 @@ export function logout() {
   })
 }
 
-export function getAllUser() {
+export function getAllUser(data) {
+  const { pageNum, size } = data
   return request({
-    url: '/resident',
-    method: 'get'
+    url: '//dongwuzhijia.com/bms/v1/resident',
+    method: 'get',
+    params: {
+      pageNum,
+      size
+    }
   })
 }
