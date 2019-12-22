@@ -136,6 +136,13 @@ export const constantRoutes = [
         name: 'ArticleCreate',
         component: () => import('@/views/article/create'),
         meta: { title: '发布资讯', icon: 'edit' }
+      },
+      {
+        path: 'detail',
+        name: 'ArticleDetail',
+        component: () => import('@/views/article/edit'),
+        meta: { title: '资讯详情', icon: 'edit' },
+        hidden: true
       }
     ]
   },

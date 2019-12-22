@@ -69,7 +69,7 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/SingleImage3'
-import { createArticle } from '@/api/article'
+import { createArticle, getArticleDetail } from '@/api/article'
 
 export default {
   name: 'ArticleDetail',
@@ -93,7 +93,7 @@ export default {
       },
       typeOptions: [{
         value: 'POLICY',
-        label: '政策'
+        label: '政府政策'
       }, {
         value: 'COMMUNITY_ANNOUNCEMENTS',
         label: '社区公告'
@@ -121,6 +121,15 @@ export default {
         this.$message.error('上传头像图片大小不能超过 5MB!')
       }
       return isLt2M
+    },
+    fetchData(id) {
+      getArticleDetail(id)
+        .then(res => {
+          this.postForm = res
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     onSubmit() {
       const req = this.postForm

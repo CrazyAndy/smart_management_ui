@@ -1,13 +1,9 @@
 <template>
   <div class="app-container">
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="序号" width="80">
-        <template>
-          <span>{{ index+1 }}</span>
-        </template>
-      </el-table-column>
+    <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
+      <el-table-column type="index" label="序号" width="50" align="center" />
 
-      <el-table-column min-width="300px" label="资讯标题">
+      <el-table-column label="资讯标题">
         <template slot-scope="{row}">
           <router-link :to="'/example/edit/'+row.id" class="link-type">
             <span>{{ row.title }}</span>
@@ -17,31 +13,27 @@
 
       <el-table-column width="180px" align="center" label="发布时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <!-- parseTime('{y}-{m}-{d} {h}:{i}') -->
+          <span>{{ scope.row.createdAt }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="180px" align="center" label="资讯类别">
         <template slot-scope="scope">
-          <span>{{ scope.row.timestamp }}</span>
+          <span>{{ scope.row.informationTypeEnum | statusFilter }}</span>
         </template>
       </el-table-column>
 
       <el-table-column class-name="status-col" label="是否置顶" width="110">
         <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
+          {{ row.isCarousel | statusFilter }}
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="120">
+      <el-table-column align="center" label="操作" width="180">
         <template slot-scope="scope">
-          <router-link :to="'/example/edit/'+scope.row.id">
-            <el-button type="primary" size="small" icon="el-icon-edit">
-              Edit
-            </el-button>
-          </router-link>
+          <el-button type="success" size="mini" @click="onDetail(scope.row.id)">编辑</el-button>
+          <el-button type="warning" size="mini" @click="onDel(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -51,44 +43,75 @@
 </template>
 
 <script>
-// import { fetchList } from '@/api/article'
-// import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { getArticleList, delArticle } from '@/api/article'
+import Pagination from '@/components/Pagination'
 
 export default {
   name: 'ArticleList',
-  // components: { Pagination },
+  components: { Pagination },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
+        false: '否',
+        true: '是',
+        POLICY: '政府政策',
+        COMMUNITY_ANNOUNCEMENTS: '社区公告',
+        GOODPEOPLE_GOODDEEDS: '好人好事'
       }
       return statusMap[status]
     }
   },
   data() {
     return {
-      list: {
-        title: '文章标题',
-        type: '通知',
-        isStick: false,
-        time: '12'
-      },
+      list: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20
-      }
+        limit: 10
+      },
+      tableData: []
     }
   },
   created() {
     this.getList()
   },
   methods: {
-    getList() {
-      this.listLoading = false
+    onDel(id) {
+      delArticle(id)
+        .then(res => {
+          this.$message.success('删除成功')
+          this.getList()
+        })
+        .catch(err => {
+          this.$message.success('删除失败')
+          console.log(err)
+        })
+    },
+    onDetail(id) {
+      this.$router.push({
+        name: 'ArticleDetail',
+        params: {
+          id
+        }
+      })
+    },
+    getList(setInit) {
+      this.listLoading = true
+      if (setInit === 1) { this.listQuery.page = 1 }
+      const req = {
+        pageNum: this.listQuery.page - 1,
+        size: this.listQuery.limit
+      }
+      getArticleList(req)
+        .then(res => {
+          this.tableData = res.content
+          this.total = res.totalElements
+          this.listLoading = false
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }

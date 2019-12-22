@@ -22,3 +22,19 @@ export function createArticle(data) {
   })
 }
 
+// 删除资讯
+export function delArticle(id) {
+  return request({
+    url: '//dongwuzhijia.com/bms/v1/information/' + id,
+    method: 'DELETE'
+  })
+}
+
+// 获取文章详情
+export function getArticleDetail(id) {
+  return request({
+    url: '//dongwuzhijia.com/bms/v1/information/' + id,
+    method: 'GET'
+  })
+}
+
