@@ -72,7 +72,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import { getAllUser } from '@/api/user'
+import { getAllUser, auditUser } from '@/api/user'
 export default {
   name: 'Peoples',
   components: { Pagination },
@@ -119,7 +119,13 @@ export default {
       })
     },
     toAudit() {
-      this.$message('审核!')
+      this.$alert('审核通过确认', '标题名称', {
+        confirmButtonText: '审核通过',
+        callback: action => {
+
+        }
+      })
+      // this.$message('审核!')
     },
     // 获取所有居民
     getAllUserData(setInit) {
