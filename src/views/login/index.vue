@@ -181,15 +181,19 @@ $light_gray:#eee;
   min-height: 100%;
   width: 100%;
   background-color: $bg;
+  background-image: url("~@/assets/bg.gif");
+  background-size: cover;
   overflow: hidden;
 
   .login-form {
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
+    padding: 35px 30px 20px 30px;
+    margin: 130px auto 35px;
     overflow: hidden;
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 10px;
   }
 
   .tips {
