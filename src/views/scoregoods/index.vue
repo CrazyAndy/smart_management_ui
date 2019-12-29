@@ -68,8 +68,8 @@ export default {
     onDetail(id) {
       this.$router.push({
         name: 'ScoreGoodDetail',
-        params: {
-          id
+        query: {
+          id: id
         }
       })
     },
