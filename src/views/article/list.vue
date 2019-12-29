@@ -1,42 +1,45 @@
 <template>
   <div class="app-container">
-    <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
-      <el-table-column type="index" label="序号" width="50" align="center" />
+    <el-button type="primary" @click="goAdd">发布资讯</el-button>
+    <div class="data">
+      <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
+        <el-table-column type="index" label="序号" width="50" align="center" />
 
-      <el-table-column label="资讯标题">
-        <template slot-scope="{row}">
-          <router-link :to="'/example/edit/'+row.id" class="link-type">
-            <span>{{ row.title }}</span>
-          </router-link>
-        </template>
-      </el-table-column>
+        <el-table-column label="资讯标题">
+          <template slot-scope="{row}">
+            <router-link :to="'/example/edit/'+row.id" class="link-type">
+              <span>{{ row.title }}</span>
+            </router-link>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="180px" align="center" label="发布时间">
-        <template slot-scope="scope">
-          <!-- parseTime('{y}-{m}-{d} {h}:{i}') -->
-          <span>{{ scope.row.createdAt }}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="180px" align="center" label="发布时间">
+          <template slot-scope="scope">
+            <!-- parseTime('{y}-{m}-{d} {h}:{i}') -->
+            <span>{{ scope.row.createdAt }}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="180px" align="center" label="资讯类别">
-        <template slot-scope="scope">
-          <span>{{ scope.row.informationTypeEnum | statusFilter }}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="180px" align="center" label="资讯类别">
+          <template slot-scope="scope">
+            <span>{{ scope.row.informationTypeEnum | statusFilter }}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column class-name="status-col" label="是否置顶" width="110">
-        <template slot-scope="{row}">
-          {{ row.isCarousel | statusFilter }}
-        </template>
-      </el-table-column>
+        <el-table-column class-name="status-col" label="是否置顶" width="110">
+          <template slot-scope="{row}">
+            {{ row.isCarousel | statusFilter }}
+          </template>
+        </el-table-column>
 
-      <el-table-column align="center" label="操作" width="180">
-        <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="onDetail(scope.row.id)">编辑</el-button>
-          <el-button type="warning" size="mini" @click="onDel(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column align="center" label="操作" width="180">
+          <template slot-scope="scope">
+            <el-button type="success" size="mini" @click="onDetail(scope.row.id)">编辑</el-button>
+            <el-button type="warning" size="mini" @click="onDel(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
@@ -77,6 +80,11 @@ export default {
     this.getList()
   },
   methods: {
+    goAdd() {
+      this.$router.push({
+        name: 'ArticleCreate'
+      })
+    },
     onDel(id) {
       delArticle(id)
         .then(res => {
@@ -118,6 +126,10 @@ export default {
 </script>
 
 <style scoped>
+
+.data {
+  margin-top: 30px;
+}
 .edit-input {
   padding-right: 100px;
 }

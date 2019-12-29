@@ -76,7 +76,6 @@ export default [
     type: 'post',
     response: _ => {
       return {
-        code: 20000,
         data: 'success'
       }
     }
