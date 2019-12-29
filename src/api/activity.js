@@ -8,3 +8,16 @@ export function createActivity(data) {
     data
   })
 }
+
+// 查询所有活动
+export function getActivityList(data) {
+  const { pageNum, size } = data
+  return request({
+    url: '//dongwuzhijia.com/front/v1/activities',
+    method: 'GET',
+    params: {
+      pageNum,
+      size
+    }
+  })
+}
