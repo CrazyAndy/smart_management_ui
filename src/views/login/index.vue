@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+// import { validUsername } from '@/utils/validate'
 
 export default {
   name: 'Login',
@@ -62,8 +62,8 @@ export default {
       callback()
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码不能少于6位字符'))
+      if (value.length < 3) {
+        callback(new Error('密码不能少于3位字符'))
       } else {
         callback()
       }
