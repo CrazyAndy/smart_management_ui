@@ -19,7 +19,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      config.headers['token'] = getToken()
     }
     return config
   },
@@ -68,11 +68,20 @@ service.interceptors.response.use(
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
-      return res
+      if (res.code) {
+        Message({
+          message: res.message || '服务器开小差，请稍后重试',
+          type: 'warning',
+          duration: 5 * 1000
+        })
+      } else {
+        return res
+      }
+      // return res
     }
   },
   error => {
-    console.log('err' + error) // for debug
+    console.log('err::', error) // for debug
     Message({
       message: error.message,
       type: 'error',
