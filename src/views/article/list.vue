@@ -109,7 +109,8 @@ export default {
       if (setInit === 1) { this.listQuery.page = 1 }
       const req = {
         pageNum: this.listQuery.page - 1,
-        size: this.listQuery.limit
+        size: this.listQuery.limit,
+        statusEnum: 'RELEASED'
       }
       getArticleList(req)
         .then(res => {

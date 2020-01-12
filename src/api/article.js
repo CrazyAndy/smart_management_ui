@@ -2,13 +2,14 @@ import request from '@/utils/request'
 
 // 获取资讯列表
 export function getArticleList(data) {
-  const { pageNum, size } = data
+  const { pageNum, size, statusEnum } = data
   return request({
     url: '//dongwuzhijia.com/bms/v1/information',
     method: 'GET',
     params: {
       pageNum,
-      size
+      size,
+      statusEnum
     }
   })
 }
