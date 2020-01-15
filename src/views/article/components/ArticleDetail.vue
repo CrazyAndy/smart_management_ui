@@ -69,7 +69,7 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/SingleImage3'
-import { createArticle, getArticleDetail } from '@/api/article'
+import { createArticle, getArticleDetail, updateArticle } from '@/api/article'
 
 export default {
   name: 'ArticleDetail',
@@ -149,26 +149,50 @@ export default {
         this.$message('请输入文章内容')
         return
       }
-      createArticle(req)
-        .then(res => {
-          this.$message({
-            message: '发布成功',
-            type: 'success',
-            onClose: () => {
-              console.log('ok')
-            }
+      // 判断是否为编辑
+      if (this.isEdit) {
+        updateArticle(req)
+          .then(res => {
+            this.$message({
+              message: '更新成功',
+              type: 'success',
+              onClose: () => {
+                console.log('ok')
+              }
+            })
+            this.$router.push({
+              name: 'AriticleList'
+            })
           })
-          this.$router.push({
-            name: 'AriticleList'
+          .catch(err => {
+            this.$message({
+              message: '更新失败',
+              type: 'warning'
+            })
+            console.log(err)
           })
-        })
-        .catch(err => {
-          this.$message({
-            message: '发布失败',
-            type: 'warning'
+      } else {
+        createArticle(req)
+          .then(res => {
+            this.$message({
+              message: '发布成功',
+              type: 'success',
+              onClose: () => {
+                console.log('ok')
+              }
+            })
+            this.$router.push({
+              name: 'AriticleList'
+            })
           })
-          console.log(err)
-        })
+          .catch(err => {
+            this.$message({
+              message: '发布失败',
+              type: 'warning'
+            })
+            console.log(err)
+          })
+      }
     }
 
   }

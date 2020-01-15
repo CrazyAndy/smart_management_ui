@@ -23,6 +23,15 @@ export function createArticle(data) {
   })
 }
 
+// 更新文章资讯
+export function updateArticle(data) {
+  return request({
+    url: '//dongwuzhijia.com/bms/v1/information',
+    method: 'PUT',
+    data
+  })
+}
+
 // 删除资讯
 export function delArticle(id) {
   return request({
