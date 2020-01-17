@@ -4,7 +4,7 @@ import request from '@/utils/request'
 export function getArticleList(data) {
   const { pageNum, size, statusEnum } = data
   return request({
-    url: '//dongwuzhijia.com/bms/v1/information',
+    url: '/bms/v1/information',
     method: 'GET',
     params: {
       pageNum,
@@ -17,7 +17,7 @@ export function getArticleList(data) {
 // 创建资讯
 export function createArticle(data) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/information',
+    url: '/bms/v1/information',
     method: 'POST',
     data
   })
@@ -26,7 +26,7 @@ export function createArticle(data) {
 // 更新文章资讯
 export function updateArticle(data) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/information',
+    url: '/bms/v1/information',
     method: 'PUT',
     data
   })
@@ -35,7 +35,7 @@ export function updateArticle(data) {
 // 删除资讯
 export function delArticle(id) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/information/' + id,
+    url: '/bms/v1/information/' + id,
     method: 'DELETE'
   })
 }
@@ -43,8 +43,7 @@ export function delArticle(id) {
 // 获取文章详情
 export function getArticleDetail(id) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/information/' + id,
+    url: '/bms/v1/information/' + id,
     method: 'GET'
   })
 }
-

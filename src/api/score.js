@@ -4,7 +4,7 @@ import request from '@/utils/request'
 export function getScoreList(data) {
   const { pageNum, size } = data
   return request({
-    url: '//dongwuzhijia.com/bms/v1/score/scoreGoods',
+    url: '/bms/v1/score/scoreGoods',
     method: 'GET',
     params: {
       pageNum,
@@ -16,7 +16,7 @@ export function getScoreList(data) {
 // 创建积分商品
 export function createScoreGood(data) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/score/scoreGoods',
+    url: '/bms/v1/score/scoreGoods',
     method: 'POST',
     data
   })
@@ -25,7 +25,7 @@ export function createScoreGood(data) {
 // 删除积分商品
 export function delScoreGood(id) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/score/scoreGoods/' + id,
+    url: '/bms/v1/score/scoreGoods/' + id,
     method: 'DELETE'
   })
 }
@@ -33,8 +33,7 @@ export function delScoreGood(id) {
 // 积分商品详情
 export function getScoreGood(id) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/score/scoreGoods/' + id,
+    url: '/bms/v1/score/scoreGoods/' + id,
     method: 'GET'
   })
 }
-

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 创建活动
 export function createActivity(data) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/activities',
+    url: '/bms/v1/activities',
     method: 'POST',
     data
   })
@@ -13,7 +13,7 @@ export function createActivity(data) {
 export function getActivityList(data) {
   const { pageNum, size } = data
   return request({
-    url: '//dongwuzhijia.com/front/v1/activities',
+    url: '/front/v1/activities',
     method: 'GET',
     params: {
       pageNum,

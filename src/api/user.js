@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function login(data) {
   return request({
     // url: '/user/login',
-    url: '//dongwuzhijia.com/bms/v1/authority',
+    url: '/bms/v1/authority',
     method: 'post',
     data
   })
@@ -28,7 +28,7 @@ export function logout() {
 export function getAllUser(data) {
   const { pageNum, size } = data
   return request({
-    url: '//dongwuzhijia.com/bms/v1/resident',
+    url: '/bms/v1/resident',
     method: 'GET',
     params: {
       pageNum,
@@ -40,7 +40,7 @@ export function getAllUser(data) {
 // 审核居民入住请求
 export function auditUser(data) {
   return request({
-    url: '//dongwuzhijia.com/bms/v1/resident/' + data.id,
+    url: '/bms/v1/resident/' + data.id,
     method: 'PUT',
     params: {
       isPass: 'true'
